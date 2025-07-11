@@ -1,25 +1,56 @@
-"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getCurrentSession } from "@/services/session";
+import { NavbarItems } from "./navbar-items";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOutIcon, UserIcon } from "lucide-react";
+import { logoutAction } from "../auth/actions";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+export async function Navbar() {
+  const session = await getCurrentSession();
+  const user = session?.user;
 
-export function Navbar() {
-  const pathname = usePathname();
-  const isAuthPage = pathname.startsWith("/auth");
-
-  if (isAuthPage) {
-    return null;
+  if (!session || !session.user) {
+    return <NavbarItems />;
   }
 
   return (
     <div className="flex items-center justify-end gap-3 p-4">
-      <Button className="rounded-full" asChild>
-        <Link href="/auth/login">Log in</Link>
-      </Button>
-      <Button className="rounded-full" variant="secondary" asChild>
-        <Link href="/auth/signup">Sign up to justhrow</Link>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger className="cursor-pointer rounded-full">
+          <Avatar>
+            <AvatarImage src={user?.avatarUrl ?? ""} />
+            <AvatarFallback className="uppercase">
+              {user?.name?.slice(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          side="bottom"
+          align="end"
+          className="min-w-48 font-medium"
+        >
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <UserIcon /> Profile
+          </DropdownMenuItem>
+          <form action={logoutAction}>
+            <DropdownMenuItem asChild>
+              <button type="submit" className="flex w-full items-center gap-2">
+                <LogOutIcon />
+                Logout
+              </button>
+            </DropdownMenuItem>
+          </form>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { getCurrentSession } from "@/services/session";
 import Link from "next/link";
 
 export async function Workspaces() {
+  const session = await getCurrentSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between gap-2">

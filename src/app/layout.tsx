@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { Navbar } from "./_components/navbar";
@@ -26,9 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <main className="wrapper flex min-h-screen flex-col tracking-tight">
+        <main className="wrapper flex min-h-screen flex-col">
           <Navbar />
           {children}
+          <Toaster position="top-center" />
         </main>
       </body>
     </html>
