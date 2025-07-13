@@ -25,3 +25,8 @@ export const CLOUDFLARE_R2_SECRET_ACCESS_KEY =
 export const SESSION_LIFETIME_IN_DAYS = Number(
   process.env.SESSION_LIFETIME_IN_DAYS || 30,
 );
+
+export const GOOGLE_OAUTH_USER_INFO_URL =
+  process.env.GOOGLE_OAUTH_USER_INFO_URL || "";
+export const GITHUB_OAUTH_USER_INFO_URL =
+  process.env.GITHUB_OAUTH_USER_INFO_URL || "";

@@ -1,45 +1,28 @@
 "server-only";
 
-import { User } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "./auth";
-
-export async function createUser({
-  name,
-  email,
-  password,
-}: {
-  name: string;
-  email: string;
-  password: string;
-}): Promise<User> {
-  const hashedPassword = await hashPassword(password);
-  return await prisma.user.create({
-    data: { name, email, password: hashedPassword },
-  });
-}
+import { Prisma } from "@/generated/prisma";
 
 export async function getUserByEmail({
   email,
-  password = false,
+  includePassword = false,
 }: {
   email: string;
-  password?: boolean;
-}): Promise<Pick<User, "id" | "name" | "email" | "password"> | null> {
+  includePassword?: boolean;
+}) {
   return await prisma.user.findUnique({
     where: { email },
     select: {
       id: true,
       name: true,
       email: true,
-      password,
+      password: includePassword,
     },
   });
 }
 
-export async function getUserById(
-  id: string,
-): Promise<Pick<User, "id" | "name" | "email"> | null> {
+export async function getUserById({ id }: { id: string }) {
   return await prisma.user.findUnique({
     where: { id },
     select: {
@@ -47,5 +30,70 @@ export async function getUserById(
       name: true,
       email: true,
     },
+  });
+}
+
+export async function createUser({
+  name,
+  email,
+  password,
+  avatarUrl,
+}: {
+  name: string;
+  email: string;
+  password?: string;
+  avatarUrl?: string;
+}) {
+  const hashedPassword = password ? await hashPassword(password) : undefined;
+  return await prisma.user.create({
+    data: { name, email, password: hashedPassword, avatarUrl },
+  });
+}
+
+export async function updateUser({
+  id,
+  name,
+  password,
+  avatarUrl,
+}: {
+  id: string;
+  name?: string;
+  password?: string;
+  avatarUrl?: string;
+}) {
+  const data: Prisma.UserUpdateInput = {};
+  if (name) {
+    data.name = name;
+  }
+  if (password) {
+    data.password = await hashPassword(password);
+  }
+  if (avatarUrl) {
+    data.avatarUrl = avatarUrl;
+  }
+
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data,
+  });
+}
+
+export async function deleteUser({ id }: { id: string }) {
+  await prisma.$transaction(async (tx) => {
+    await tx.content.deleteMany({
+      where: {
+        userId: id,
+      },
+    });
+    await tx.workspace.deleteMany({
+      where: {
+        userId: id,
+      },
+    });
+    await tx.user.delete({
+      where: { id },
+    });
   });
 }

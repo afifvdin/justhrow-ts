@@ -13,5 +13,5 @@ export default async function AppLayout({
     redirect("/auth/login");
   }
 
-  return children;
+  return <div className="mx-auto w-full max-w-5xl p-8">{children}</div>;
 }

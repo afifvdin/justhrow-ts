@@ -27,3 +27,7 @@ export type TLoginState = {
     password: string;
   };
 };
+
+export type TNewWorkspaceState = {
+  errors: string[];
+};

@@ -1,16 +1,16 @@
 "use server";
 
-import { googleOAuth } from "@/lib/auth";
+import * as arctic from "arctic";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import z from "zod";
+import { githubOAuth, googleOAuth } from "@/lib/auth";
 import { IS_PROD, SESSION_LIFETIME_IN_DAYS } from "@/lib/constant";
 import { loginSchema, signUpSchema } from "@/lib/schema";
 import { verifyPassword } from "@/services/auth";
 import { createSession } from "@/services/session";
 import { createUser, getUserByEmail } from "@/services/user";
 import { TLoginState, TRegisterState } from "@/types/state";
-import * as arctic from "arctic";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import z from "zod";
 
 export async function logoutAction() {
   const cookieStore = await cookies();
@@ -42,7 +42,7 @@ export async function loginAction(
   }
 
   try {
-    const user = await getUserByEmail({ email, password: true });
+    const user = await getUserByEmail({ email, includePassword: true });
     if (!user) {
       return { error: { errors: ["User not found"] }, state };
     }
@@ -52,7 +52,7 @@ export async function loginAction(
       return { error: { errors: ["Invalid password"] }, state };
     }
 
-    const session = await createSession(user.id);
+    const session = await createSession({ userId: user.id });
     cookieStore.set("session", session.id, {
       httpOnly: true,
       secure: IS_PROD,
@@ -111,7 +111,7 @@ export async function registerAction(
 
     const user = await createUser({ name, email, password });
 
-    const session = await createSession(user.id);
+    const session = await createSession({ userId: user.id });
     cookieStore.set("session", session.id, {
       httpOnly: true,
       secure: IS_PROD,
@@ -137,6 +137,15 @@ export async function googleLoginAction() {
   const codeVerifier = arctic.generateCodeVerifier();
   const scopes = ["openid", "profile", "email"];
   const url = googleOAuth.createAuthorizationURL(state, codeVerifier, scopes);
+
+  cookieStore.set("googleCodeVerifier", codeVerifier);
+  redirect(url.toString());
+}
+
+export async function githubLoginAction() {
+  const state = arctic.generateState();
+  const scopes = ["user:email", "repo"];
+  const url = githubOAuth.createAuthorizationURL(state, scopes);
 
   redirect(url.toString());
 }

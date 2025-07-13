@@ -1,49 +1,27 @@
 "server-only";
 
-import { Prisma, Session } from "@/generated/prisma";
+import { cookies } from "next/headers";
 import { SESSION_LIFETIME_IN_DAYS } from "@/lib/constant";
 import { prisma } from "@/lib/db";
-import { cookies } from "next/headers";
 
-type SessionWithUser = Prisma.SessionGetPayload<{
-  include: {
-    user: {
-      select: {
-        id: true;
-        name: true;
-        email: true;
-        avatarUrl: true;
-      };
-    };
-  };
-}>;
-
-export async function createSession(userId: string): Promise<Session> {
-  const expiresAt = new Date(
-    Date.now() + 1000 * 60 * 60 * 24 * SESSION_LIFETIME_IN_DAYS,
-  );
-
-  return await prisma.session.create({
-    data: { userId, expiresAt },
+export async function getAllSessions({ userId }: { userId: string }) {
+  return await prisma.session.findMany({
+    where: { userId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
   });
 }
 
-export async function getCurrentSession(): Promise<SessionWithUser | null> {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session");
-
-  if (!session) {
-    return null;
-  }
-
-  return await getSession(session.value);
-}
-
-export async function getSession(
-  sessionId: string,
-): Promise<SessionWithUser | null> {
+export async function getSession({ id }: { id: string }) {
   const session = await prisma.session.findUnique({
-    where: { id: sessionId },
+    where: { id },
     include: {
       user: {
         select: {
@@ -67,23 +45,29 @@ export async function getSession(
   return session;
 }
 
-export async function deleteSession(sessionId: string) {
-  return await prisma.session.delete({
-    where: { id: sessionId },
+export async function getCurrentSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session");
+
+  if (!session) {
+    return null;
+  }
+
+  return await getSession({ id: session.value });
+}
+
+export async function createSession({ userId }: { userId: string }) {
+  const expiresAt = new Date(
+    Date.now() + 1000 * 60 * 60 * 24 * SESSION_LIFETIME_IN_DAYS,
+  );
+
+  return await prisma.session.create({
+    data: { userId, expiresAt },
   });
 }
 
-export async function getAllSessions(userId: string) {
-  return await prisma.session.findMany({
-    where: { userId },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
+export async function deleteSession({ id }: { id: string }) {
+  return await prisma.session.delete({
+    where: { id },
   });
 }

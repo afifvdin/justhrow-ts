@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { SearchIcon } from "lucide-react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -7,16 +8,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchIcon } from "lucide-react";
+import { getCurrentSession } from "@/services/session";
+import { getAllWorkspace } from "@/services/workspace";
+import { NewWorkspaceForm } from "./_components/new-workspace-form";
 
 export default async function WorkspacesPage() {
+  const session = await getCurrentSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
+  const workspaces = await getAllWorkspace({ userId: session.user.id });
+
   return (
-    <div className="mx-auto w-full max-w-5xl p-8">
+    <>
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-lg font-semibold">Your workspaces</h2>
-        <Button className="rounded-full" size="sm">
-          New workspace
-        </Button>
+        <NewWorkspaceForm />
       </div>
       <div className="flex items-center justify-between gap-4">
         <div className="relative grow">
@@ -37,27 +46,38 @@ export default async function WorkspacesPage() {
         </Select>
       </div>
       <div className="mt-4 grid grid-cols-3 gap-4">
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
-        <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50" />
+        {workspaces.map((workspace) => {
+          return (
+            <Workspace
+              key={workspace.id}
+              id={workspace.id}
+              name={workspace.name}
+              filesCount={workspace._count.contents}
+            />
+          );
+        })}
       </div>
-    </div>
+    </>
   );
 }
+
+const Workspace = ({
+  id,
+  name,
+  filesCount,
+}: {
+  id: string;
+  name: string;
+  filesCount: number;
+}) => {
+  return (
+    <Link href={`/workspaces/${id}`}>
+      <div className="flex w-full flex-col items-start rounded-xl border bg-neutral-50 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg">
+        <p>{name}</p>
+        <p className="text-muted-foreground text-sm">
+          {filesCount} files uploaded
+        </p>
+      </div>
+    </Link>
+  );
+};

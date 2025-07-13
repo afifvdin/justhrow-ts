@@ -1,6 +1,5 @@
+import { LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getCurrentSession } from "@/services/session";
-import { NavbarItems } from "./navbar-items";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOutIcon, UserIcon } from "lucide-react";
+import { getCurrentSession } from "@/services/session";
 import { logoutAction } from "../auth/actions";
+import { NavbarItems } from "./navbar-items";
+import { Navigation } from "./navigation";
 
 export async function Navbar() {
   const session = await getCurrentSession();
@@ -21,7 +22,8 @@ export async function Navbar() {
   }
 
   return (
-    <div className="flex items-center justify-end gap-3 p-4">
+    <div className="flex items-center justify-between gap-3 p-4">
+      <Navigation />
       <DropdownMenu>
         <DropdownMenuTrigger className="cursor-pointer rounded-full">
           <Avatar>
@@ -36,15 +38,18 @@ export async function Navbar() {
           align="end"
           className="min-w-48 font-medium"
         >
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            <p>My Account</p>
+            <p className="text-muted-foreground text-sm">{user?.email}</p>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <UserIcon /> Profile
-          </DropdownMenuItem>
           <form action={logoutAction}>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem
+              asChild
+              className="!text-destructive hover:!text-destructive"
+            >
               <button type="submit" className="flex w-full items-center gap-2">
-                <LogOutIcon />
+                <LogOutIcon className="!text-destructive hover:!text-destructive" />
                 Logout
               </button>
             </DropdownMenuItem>
