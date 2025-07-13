@@ -30,3 +30,5 @@ export const GOOGLE_OAUTH_USER_INFO_URL =
   process.env.GOOGLE_OAUTH_USER_INFO_URL || "";
 export const GITHUB_OAUTH_USER_INFO_URL =
   process.env.GITHUB_OAUTH_USER_INFO_URL || "";
+export const GITHUB_OAUTH_USER_EMAIL_INFO_URL =
+  process.env.GITHUB_OAUTH_USER_EMAIL_INFO_URL || "";

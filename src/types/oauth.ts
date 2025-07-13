@@ -44,3 +44,9 @@ export type TGitHubUser = {
   created_at: string;
   updated_at: string;
 };
+
+export type TGithubEmail = {
+  email: string;
+  primary: boolean;
+  verified: boolean;
+};
