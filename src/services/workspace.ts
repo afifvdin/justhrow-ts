@@ -6,14 +6,19 @@ import { prisma } from "@/lib/db";
 export async function getAllWorkspace({
   userId,
   sort = "desc",
+  search,
 }: {
   userId: string;
   sort?: "asc" | "desc";
+  search?: string;
 }) {
+  const where: Prisma.WorkspaceWhereInput = { userId };
+  if (search && typeof search === "string") {
+    where.name = { contains: search, mode: "insensitive" };
+  }
+
   return await prisma.workspace.findMany({
-    where: {
-      userId,
-    },
+    where,
     include: {
       _count: {
         select: {

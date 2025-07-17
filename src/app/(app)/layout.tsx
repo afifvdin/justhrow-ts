@@ -1,6 +1,6 @@
-import { getCurrentSession } from "@/services/session";
 import { redirect } from "next/navigation";
 import React from "react";
+import { getCurrentSession } from "@/services/session";
 
 export default async function AppLayout({
   children,

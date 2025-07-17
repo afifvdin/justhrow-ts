@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getCurrentSession } from "@/services/session";
 import { getAllWorkspace } from "@/services/workspace";
-import Link from "next/link";
+import { Workspace } from "./workspace";
 
 export async function Workspaces() {
   const session = await getCurrentSession();
@@ -27,11 +28,12 @@ export async function Workspaces() {
       <div className="mt-4 grid grid-cols-3 gap-4">
         {workspaces.map((workspace) => {
           return (
-            <Link key={workspace.id} href={`/workspaces/${workspace.id}`}>
-              <div className="h-48 w-full animate-pulse rounded-3xl border bg-neutral-50">
-                {workspace.name}
-              </div>
-            </Link>
+            <Workspace
+              key={workspace.id}
+              id={workspace.id}
+              name={workspace.name}
+              filesCount={workspace._count.contents}
+            />
           );
         })}
       </div>

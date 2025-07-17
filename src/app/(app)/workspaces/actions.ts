@@ -1,9 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getCurrentSession } from "@/services/session";
 import { createWorkspace } from "@/services/workspace";
 import { TNewWorkspaceState } from "@/types/state";
-import { redirect } from "next/navigation";
 
 export async function createWorkspaceAction(
   _: any,

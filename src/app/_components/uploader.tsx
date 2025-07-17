@@ -7,12 +7,15 @@ import {
   FileArchiveIcon,
   FileImageIcon,
   FileTextIcon,
+  Loader2Icon,
   PlusIcon,
   XIcon,
 } from "lucide-react";
 import React from "react";
+import { uploadAction } from "../actions";
 
 export function Uploader() {
+  const [state, action, pending] = React.useActionState(uploadAction, null);
   const [files, setFiles] = React.useState<File[]>([]);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -23,12 +26,13 @@ export function Uploader() {
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFiles = e.target.files;
     if (targetFiles && targetFiles.length) {
-      setFiles(Array.from(targetFiles));
+      setFiles([...files, ...Array.from(targetFiles)]);
     }
   };
 
   return (
-    <div
+    <form
+      action={action}
       className={cn(
         files.length === 0 && "border-dashed",
         "group/uploader relative mx-auto flex max-h-96 min-h-52 w-full max-w-2xl flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-200 bg-neutral-50 text-center text-gray-500 transition-all",
@@ -37,6 +41,7 @@ export function Uploader() {
       <input
         ref={inputRef}
         onChange={handleFilesChange}
+        name="files"
         type="file"
         multiple
         className={cn(
@@ -80,12 +85,21 @@ export function Uploader() {
             <PlusIcon />
             Add files
           </Button>
-          <Button size="icon" className="m-0 size-auto rounded-full p-1.5">
-            <ArrowUpIcon />
+          <Button
+            disabled={pending}
+            type="submit"
+            size="icon"
+            className="m-0 size-auto rounded-full p-1.5"
+          >
+            {pending ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              <ArrowUpIcon />
+            )}
           </Button>
         </div>
       )}
-    </div>
+    </form>
   );
 }
 
