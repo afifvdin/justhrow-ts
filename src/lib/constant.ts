@@ -35,3 +35,15 @@ export const CLOUDFLARE_R2_DEFAULT_PRESIGNED_EXPIRES_IN = Number(
 export const SESSION_LIFETIME_IN_DAYS = Number(
   process.env.SESSION_LIFETIME_IN_DAYS || 30,
 );
+
+export const IMAGES_EXTENSIONS = [
+  "JPG",
+  "JPEG",
+  "PNG",
+  "GIF",
+  "WEBP",
+  "SVG",
+  "BMP",
+  "ICO",
+  "AVIF",
+];

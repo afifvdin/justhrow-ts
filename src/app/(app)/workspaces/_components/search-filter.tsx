@@ -33,13 +33,13 @@ export function SearchFilter() {
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="my-4 flex items-center justify-between gap-2 sm:gap-4">
       <form className="relative grow" onSubmit={updateParamForm}>
         <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-neutral-400" />
         <Input
           name="search"
           placeholder="Search your workspaces"
-          className="my-4 bg-white pl-8 shadow-none"
+          className="bg-white pl-8 shadow-none"
         />
       </form>
       <Select defaultValue={sort} onValueChange={updateParam}>

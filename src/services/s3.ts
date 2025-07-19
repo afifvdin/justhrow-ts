@@ -1,10 +1,21 @@
 import { CLOUDFLARE_R2_BUCKET } from "@/lib/constant";
 import { r2Client } from "@/lib/s3";
-import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { createId } from "@paralleldrive/cuid2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export async function upload({ file, folder }: { file: File; folder: string }) {
+export async function uploadFile({
+  file,
+  folder,
+}: {
+  file: File;
+  folder: string;
+}) {
   const ext = file.name.split(".").at(-1);
   const name = file.name.split(".").slice(0, -1).join(".");
   const filename = `${name}-${createId()}.${ext}`;
@@ -27,14 +38,14 @@ export async function upload({ file, folder }: { file: File; folder: string }) {
   }
 }
 
-export async function uploadMany({
+export async function uploadManyFile({
   files,
   folder,
 }: {
   files: File[];
   folder: string;
 }) {
-  return await Promise.all(files.map((file) => upload({ file, folder })));
+  return await Promise.all(files.map((file) => uploadFile({ file, folder })));
 }
 
 export async function getPresignedUrl({
@@ -43,11 +54,37 @@ export async function getPresignedUrl({
 }: {
   path: string;
   expiresIn?: number;
-}) {
-  const command = new GetObjectCommand({
-    Bucket: CLOUDFLARE_R2_BUCKET,
-    Key: path,
-  });
+}): Promise<string> {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: CLOUDFLARE_R2_BUCKET,
+      Key: path,
+    });
 
-  return await getSignedUrl(r2Client as any, command, { expiresIn });
+    return await getSignedUrl(r2Client as any, command, { expiresIn });
+  } catch (error) {
+    console.log("[S3] Get presigned URL failed. error: ", error);
+    return "";
+  }
+}
+
+export async function removeFile({ path }: { path: string }) {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: CLOUDFLARE_R2_BUCKET,
+      Key: path,
+    });
+
+    await r2Client.send(command);
+  } catch (error) {
+    console.log("[S3] Delete failed. error: ", error);
+  }
+}
+
+export async function removeManyFile({ paths }: { paths: string[] }) {
+  try {
+    return await Promise.all(paths.map((path) => removeFile({ path })));
+  } catch (error) {
+    console.log("[S3] Delete failed. error: ", error);
+  }
 }

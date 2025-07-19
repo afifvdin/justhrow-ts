@@ -44,10 +44,15 @@ export async function createUser({
   password?: string;
   avatarUrl?: string;
 }) {
-  const hashedPassword = password ? await hashPassword(password) : undefined;
-  return await prisma.user.create({
-    data: { name, email, password: hashedPassword, avatarUrl },
-  });
+  try {
+    const hashedPassword = password ? await hashPassword(password) : undefined;
+    return await prisma.user.create({
+      data: { name, email, password: hashedPassword, avatarUrl },
+    });
+  } catch (error) {
+    console.error("[ERROR] Create User:", error);
+    throw new Error("Failed to create user. Please try again.");
+  }
 }
 
 export async function updateUser({
@@ -61,39 +66,49 @@ export async function updateUser({
   password?: string;
   avatarUrl?: string;
 }) {
-  const data: Prisma.UserUpdateInput = {};
-  if (name) {
-    data.name = name;
-  }
-  if (password) {
-    data.password = await hashPassword(password);
-  }
-  if (avatarUrl) {
-    data.avatarUrl = avatarUrl;
-  }
+  try {
+    const data: Prisma.UserUpdateInput = {};
+    if (name) {
+      data.name = name;
+    }
+    if (password) {
+      data.password = await hashPassword(password);
+    }
+    if (avatarUrl) {
+      data.avatarUrl = avatarUrl;
+    }
 
-  return await prisma.user.update({
-    where: {
-      id,
-    },
-    data,
-  });
+    return await prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  } catch (error) {
+    console.error("[ERROR] Update User:", error);
+    throw new Error("Failed to update user. Please try again.");
+  }
 }
 
 export async function deleteUser({ id }: { id: string }) {
-  await prisma.$transaction(async (tx) => {
-    await tx.content.deleteMany({
-      where: {
-        userId: id,
-      },
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.content.deleteMany({
+        where: {
+          userId: id,
+        },
+      });
+      await tx.workspace.deleteMany({
+        where: {
+          userId: id,
+        },
+      });
+      await tx.user.delete({
+        where: { id },
+      });
     });
-    await tx.workspace.deleteMany({
-      where: {
-        userId: id,
-      },
-    });
-    await tx.user.delete({
-      where: { id },
-    });
-  });
+  } catch (error) {
+    console.error("[ERROR] Delete User:", error);
+    throw new Error("Failed to delete user. Please try again.");
+  }
 }

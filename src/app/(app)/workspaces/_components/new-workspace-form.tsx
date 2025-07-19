@@ -8,7 +8,9 @@ import { TNewWorkspaceState } from "@/types/state";
 import { createWorkspaceAction } from "../actions";
 
 const initialState: TNewWorkspaceState = {
-  errors: [],
+  error: {
+    errors: [],
+  },
 };
 
 export function NewWorkspaceForm() {
@@ -18,8 +20,8 @@ export function NewWorkspaceForm() {
   );
 
   React.useEffect(() => {
-    if (state.errors.length) {
-      state.errors.map((error) => {
+    if (state.error?.errors.length) {
+      state.error.errors.map((error) => {
         toast.error(error);
       });
     }

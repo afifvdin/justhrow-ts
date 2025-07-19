@@ -121,11 +121,42 @@
   }
 }
 
-.wrapper {
+.wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 320px;
+  width: 100%;
   background-image: url("/aurora.png");
+  /* background-size: 100% 300px; */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
+  z-index: -2;
+}
+
+.aurora-overlay {
+  background: linear-gradient(280deg, #03f241, #d549dd, #03e5f2, #03f241);
+  background-size: 400% 400%;
   background-position: top;
-  background-size: 100% 250px;
-  /* filter: grayscale(1); */
-  position: relative;
+  animation: aurora-overlay 15s ease infinite;
+}
+
+@keyframes aurora-overlay {
+  0% {
+    background-position: 0 94%;
+    -webkit-backdrop-filter: saturate(3);
+    backdrop-filter: saturate(3);
+  }
+  50% {
+    background-position: 70% 7%;
+    -webkit-backdrop-filter: saturate(1.5) hue-rotate(100deg);
+    backdrop-filter: saturate(1.5) hue-rotate(100deg);
+  }
+  100% {
+    background-position: 0 94%;
+    -webkit-backdrop-filter: saturate(1.5);
+    backdrop-filter: saturate(1.5);
+  }
 }

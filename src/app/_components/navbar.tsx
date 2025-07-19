@@ -22,7 +22,7 @@ export async function Navbar() {
   }
 
   return (
-    <div className="flex items-center justify-between gap-3 p-4">
+    <div className="flex items-center justify-between gap-1 px-4 py-2 sm:gap-3 sm:p-4">
       <Navigation />
       <DropdownMenu>
         <DropdownMenuTrigger className="cursor-pointer rounded-full">

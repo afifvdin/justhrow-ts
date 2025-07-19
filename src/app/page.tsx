@@ -14,9 +14,11 @@ const WORDING = [
 export default async function Home() {
   const word = WORDING[Math.floor(Math.random() * WORDING.length)];
   return (
-    <div className="bg mx-auto flex min-h-full w-full max-w-5xl grow flex-col items-center justify-center space-y-24 px-8 py-36">
-      <div className="flex w-full flex-col items-center justify-center gap-4 pb-16">
-        <h1 className="text-5xl font-semibold tracking-tighter">{word}</h1>
+    <div className="bg mx-auto flex min-h-full w-full max-w-5xl grow flex-col items-center justify-center space-y-12 px-4 py-16 sm:space-y-24 sm:px-8 sm:py-36">
+      <div className="flex w-full flex-col items-center justify-center gap-2 sm:gap-4 sm:pb-16">
+        <h1 className="text-3xl font-semibold tracking-tighter sm:text-5xl">
+          {word}
+        </h1>
         <Uploader />
       </div>
       <Workspaces />

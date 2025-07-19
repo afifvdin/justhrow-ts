@@ -25,7 +25,7 @@ export async function Workspaces() {
           <Link href="/workspaces">View all</Link>
         </Button>
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
         {workspaces.map((workspace) => {
           return (
             <Workspace

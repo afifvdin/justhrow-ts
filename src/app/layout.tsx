@@ -27,10 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <main className="wrapper flex min-h-screen flex-col">
+        <main className="wrapper relative flex min-h-screen flex-col">
           <Navbar />
           {children}
           <Toaster position="top-center" />
+          <div className="aurora-overlay absolute top-0 left-0 -z-1 h-[320px] w-full mix-blend-lighten" />
         </main>
       </body>
     </html>

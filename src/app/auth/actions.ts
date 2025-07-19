@@ -63,7 +63,7 @@ export async function loginAction(
     console.log("[ERROR] Login Action:", error);
     return {
       error: {
-        errors: ["Something went wrong"],
+        errors: ["Something went wrong. Please try again."],
       },
       state,
     };
@@ -122,7 +122,7 @@ export async function registerAction(
     console.log("[ERROR] Register Action:", error);
     return {
       error: {
-        errors: ["Something went wrong"],
+        errors: ["Something went wrong. Please try again."],
       },
     };
   }

@@ -14,13 +14,13 @@ export function Workspace({
       <div
         style={
           {
-            "--degree": `${Math.random() * 10 - 5}deg`,
+            "--degree": `${Math.random() * 8 - 4}deg`,
           } as React.CSSProperties
         }
-        className="relative top-0 flex h-52 rotate-(--degree) cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border-8 bg-white p-4 shadow transition-all hover:-top-1 hover:shadow-xl"
+        className="relative top-0 flex h-36 rotate-(--degree) cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-4 bg-white p-2 shadow transition-all hover:-top-1 hover:shadow-xl sm:h-52 sm:rounded-3xl sm:border-8 sm:p-4"
       >
-        <p>{name}</p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm sm:text-base">{name}</p>
+        <p className="text-muted-foreground text-xs sm:text-sm">
           {filesCount} files uploaded
         </p>
       </div>
