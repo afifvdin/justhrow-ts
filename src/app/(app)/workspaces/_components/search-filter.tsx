@@ -2,6 +2,7 @@
 
 import { SearchIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormEvent, FormEventHandler } from "react";
 
 export function SearchFilter() {
   const router = useRouter();

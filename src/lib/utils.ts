@@ -48,7 +48,6 @@ export function createUTCDate({
 
 export function isWithinWeek({ now, later }: { now: Date; later: Date }) {
   const diffMs = later.getTime() - now.getTime();
-
   const weekInMs = 7 * 24 * 60 * 60 * 1000;
 
   return diffMs <= weekInMs;

@@ -2,12 +2,11 @@ import { CLOUDFLARE_R2_BUCKET } from "@/lib/constant";
 import { r2Client } from "@/lib/s3";
 import {
   DeleteObjectCommand,
-  DeleteObjectsCommand,
   GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
-import { createId } from "@paralleldrive/cuid2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createId } from "@paralleldrive/cuid2";
 
 export async function uploadFile({
   file,

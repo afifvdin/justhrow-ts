@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import z from "zod";
 import { workspaceSettingsSchema } from "@/lib/schema";
 import { createUTCDate, isWithinWeek } from "@/lib/utils";
@@ -17,7 +18,6 @@ import {
   TNewContentState,
   TSettingsState,
 } from "@/types/state";
-import { redirect } from "next/navigation";
 
 export async function appendContentsAction(
   _: any,

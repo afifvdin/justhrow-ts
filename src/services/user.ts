@@ -1,8 +1,8 @@
 "server-only";
 
+import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "./auth";
-import { Prisma } from "@/generated/prisma";
 
 export async function getUserByEmail({
   email,
